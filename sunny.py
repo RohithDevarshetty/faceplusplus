@@ -1,29 +1,22 @@
-import serial
-import pyautogui
+import serial  # Serial imported for Serial communication
+import time  # Required to use delay functions
+import pyautogui  # Required to to perform actions
 
-Arduino_Serial = serial.Serial('com12', 9600)  # Initialize serial and Create Serial port object called Arduino_Serial
-
+ArduinoSerial = serial.Serial('com3', 9600)  # Create Serial port object called arduinoSerialData
+time.sleep(2)  # wait for 2 seconds for the communication to get established
 while 1:
-    incoming_data = str(Arduino_Serial.readline())  # read the serial data and print it as line
-    print incoming_data  # print the incoming Serial data
+    incoming = str(ArduinoSerial.readline())  # read the serial data and print it as line
+    print incoming
 
-    if 'next' in incoming_data:  # if incoming data is 'next'
-        pyautogui.hotkey('ctrl', 'pgdn')  # perform "ctrl+pgdn" operation which moves to the next tab
+    if 'Play/Pause' in incoming:
+        pyautogui.typewrite(['space'], 0.2)
+    if 'Rewind' in incoming:
+        pyautogui.hotkey('ctrl', 'left')
+    if 'Forward' in incoming:
+        pyautogui.hotkey('shift', 'right')
+    if 'Volume Incresaed' in incoming:
+        pyautogui.hotkey('shift', 'down')
 
-    if 'previous' in incoming_data:  # if incoming data is 'previous'
-        pyautogui.hotkey('ctrl', 'pgup')  # perform "ctrl+pgup" operation which moves to the previous tab
-
-    if 'down' in incoming_data:  # if incoming data is 'down'
-        # pyautogui.press('down')                   # performs "down arrow" operation which scrolls down the page
-        pyautogui.scroll(-100)
-
-    if 'up' in incoming_data:  # if incoming data is 'up'
-        # pyautogui.press('up')                      # performs "up arrow" operation which scrolls up the page
-        pyautogui.scroll(100)
-
-    if 'change' in incoming_data:  # if incoming data is 'change'
-        pyautogui.keyDown('alt')  # performs "alt+tab" operation which switches the tab
-        pyautogui.press('tab')
-        pyautogui.keyUp('alt')
-
-    incoming_data = "";  # clears the data
+    if 'Volume Decreased' in incoming:
+        pyautogui.hotkey('shift', ' right')
+    incoming = "";
