@@ -7,8 +7,8 @@ cap = cv2.VideoCapture(0)
 
 
 def get_image():
-    ret, img = cap.read()  # reads frames from a camera
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # convert to gray scale of each frames
+    ret, img = cap.read()
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     return gray
 
 
@@ -20,27 +20,30 @@ def detect_face(gray):
         return False
 
 
+ArduinoSerial = serial.Serial('com3', 9600)
+time.sleep(2)
+
+
 while 1:
     img = get_image()
     faces = detect_face(img)
     if faces:
-        ArduinoSerial = serial.Serial('com3', 9600)  # Create Serial port object called arduinoSerialData
-        time.sleep(2)  # wait for 2 seconds for the communication to get established
-        incoming = str(ArduinoSerial.readline())  # read the serial data and print it as line
+        print('face detected')
+        incoming = str(ArduinoSerial.readline())
         print(incoming)
-        if 'Play/Pause' in incoming:
-            pyautogui.typewrite(['space'], 0.2)
-        if 'Rewind' in incoming:
-            pyautogui.hotkey('ctrl', 'left')
-        if 'Forward' in incoming:
-            pyautogui.hotkey('shift', 'right')
-        if 'Volume Incresaed' in incoming:
-            pyautogui.hotkey('shift', 'down')
-        if 'Volume Decreased' in incoming:
-            pyautogui.hotkey('shift', ' right')
+        if 'movedback' in incoming:
+            print('Zooming IN')
+            pyautogui.hotkey('ctrl', '+')
+        if 'movedfront' in incoming:
+            print('Zooming OUT')
+            pyautogui.hotkey('ctrl', '-')
+        if 'Stay' in incoming:
+            print('Constant position')
+            #  pyautogui.hotkey('shift', 'right')
         incoming = "";
     else:
         print("\r face not detected")
+
 cap.release()
 
 
